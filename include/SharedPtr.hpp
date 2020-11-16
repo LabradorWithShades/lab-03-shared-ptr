@@ -5,6 +5,7 @@
 #define INCLUDE_SHAREDPTR_HPP_
 
 #include <cstdint>
+#include <utility>
 
 template <typename T>
 class SharedPtr {
@@ -21,7 +22,7 @@ class SharedPtr {
     }
 
     SharedPtr() : m_useCount(nullptr), m_object(nullptr), m_coherent(false) {}
-    SharedPtr(T* ptr)
+    explicit SharedPtr(T* ptr)
         : m_useCount(new std::size_t(1))
         , m_object(ptr)
         , m_coherent(false) {}
@@ -103,17 +104,9 @@ class SharedPtr {
         m_coherent = false;
     }
     void swap(SharedPtr& r) {
-        std::size_t* useCountPointer = r.m_useCount;
-        r.m_useCount = m_useCount;
-        m_useCount = useCountPointer;
-
-        T* objectPointer = r.m_object;
-        r.m_object = m_object;
-        m_object = objectPointer;
-
-        bool isCoherent = r.m_coherent;
-        r.m_coherent = m_coherent;
-        m_coherent = isCoherent;
+        std::swap(r.m_useCount, m_useCount);
+        std::swap(r.m_object, m_object);
+        std::swap(r.m_coherent, m_coherent);
     }
     auto use_count() const -> std::size_t {
         if (m_useCount == nullptr)
@@ -121,6 +114,7 @@ class SharedPtr {
         else
           return *m_useCount;
     }
+
  private:
     std::size_t* m_useCount;
               T* m_object;

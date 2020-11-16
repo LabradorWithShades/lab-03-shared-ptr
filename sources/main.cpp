@@ -91,7 +91,8 @@ int main() {
         if (ptr)
             std::cout << "Pointer does point to something - OK" << std::endl;
         std::cout << ptr.use_count() << std::endl; // 3
-        std::cout << "(" << ptr->m_x << "," << ptr->m_y << ")" << std::endl;//(3,4)
+        std::cout << "(" << ptr->m_x << ", " << ptr->m_y << ")"
+                  << std::endl;//(3,4)
         if (ptr_copy)
             std::cout << "Pointer 2 does point to something - OK" << std::endl;
         std::cout << ptr_copy.use_count() << std::endl; // 3
