@@ -1,3 +1,6 @@
+// Copyright 2020 LabradorWithShades
+// 70892548+LabradorWithShades@users.noreply.github.com
+
 #ifndef INCLUDE_SHAREDPTR_HPP_
 #define INCLUDE_SHAREDPTR_HPP_
 
@@ -25,13 +28,13 @@ class SharedPtr {
     SharedPtr(const SharedPtr& r)
         : m_useCount(r.m_useCount)
         , m_object(r.m_object)
-        , m_coherent(false) {
+        , m_coherent(r.m_coherent) {
       ++(*m_useCount);
     }
     SharedPtr(SharedPtr&& r)
         : m_useCount(r.m_useCount)
         , m_object(r.m_object)
-        , m_coherent(false) {
+        , m_coherent(r.m_coherent) {
       r.m_object = nullptr;
       r.m_useCount = nullptr;
     }
@@ -43,8 +46,10 @@ class SharedPtr {
             if (!m_coherent) {
                 delete m_object;
                 delete m_useCount;
-            } else
+            } else {
+                m_object->~T();
                 delete[] reinterpret_cast<char*>(m_useCount);
+            }
         }
     }
 
@@ -70,7 +75,7 @@ class SharedPtr {
     }
 
     operator bool() const { return (m_object != nullptr); }
-    auto operator*() const -> T& { return m_object; }
+    auto operator*() const -> T& { return *m_object; }
     auto operator->() const -> T* { return m_object; }
 
     auto get() -> T* { return m_object; }
@@ -82,8 +87,10 @@ class SharedPtr {
             if (!m_coherent) {
                 delete m_object;
                 delete m_useCount;
-            } else
+            } else {
+                m_object->~T();
                 delete[] reinterpret_cast<char*>(m_useCount);
+            }
         }
         m_object = nullptr;
         m_useCount = nullptr;
