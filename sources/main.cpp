@@ -1,3 +1,13 @@
-// Copyright 2020 Your Name <your_email>
+#include "SharedPtr.hpp"
 
-#include <header.hpp>
+#include <iostream>
+
+int main() {
+    SharedPtr<int> ptr1;
+    const SharedPtr<int> ptr2 = SharedPtr<int>::make_shared(1);
+    ptr1 = ptr2;
+    std::cout << ptr1.use_count();
+
+
+    return 0;
+}
